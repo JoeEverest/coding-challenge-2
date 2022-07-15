@@ -11,16 +11,22 @@ function App() {
 
 	const [nextPage, setNextPage] = useState(null);
 
-	const [artistInfo, setArtistInfo] = useState();
+	const [artistInfo, setArtistInfo] = useState({ data: [] });
+	const [error, setError] = useState(false);
 
-	// const {data} = artistInfo;
+	const { data } = artistInfo;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		getArtistInfo(searchQuery, nextPage, (data) => {
 			console.log(data);
+			if (data.error) {
+				console.log(data.error);
+				return setError(true);
+			}
+			return setArtistInfo(data);
 		});
-	}
+	};
 
 	return (
 		<div className="container">
@@ -38,7 +44,7 @@ function App() {
 				</form>
 			</div>
 			<div className="results">
-				{/* {data.map((artist) => (
+				{data.map((artist) => (
 					<div
 						className="artist-results shadow-1"
 						onClick={() => {
@@ -48,7 +54,7 @@ function App() {
 						<img src={artist.picture_medium} alt={artist.name} />
 						<h3>{artist.name}</h3>
 					</div>
-				))} */}
+				))}
 			</div>
 		</div>
 	);
