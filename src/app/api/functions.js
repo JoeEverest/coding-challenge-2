@@ -1,18 +1,17 @@
 import Axios from "axios";
-import { API_BASE_URL, API_KEY } from "./../utils/constants";
+import { API_BASE_URL, API_KEY, CORS_URL } from "./../utils/constants";
 
 export function getArtistInfo(artist, next = null, callback) {
-	const options = {
-		method: "GET",
-		url: API_BASE_URL + "search/artist",
-		params: { q: artist },
-		headers: {
-			"X-RapidAPI-Key": API_KEY,
-			"X-RapidAPI-Host": "deezerdevs-deezer.p.rapidapi.com",
-		},
+	const url = next
+		? CORS_URL + next
+		: API_BASE_URL + "/search/artist?index=0&limit=10&q=" + artist;
+	const config = {
+		method: "get",
+		url,
+		headers: {},
 	};
 
-	Axios.request(options)
+	Axios.request(config)
 		.then(function (response) {
 			callback(response.data);
 		})
@@ -20,3 +19,7 @@ export function getArtistInfo(artist, next = null, callback) {
 			console.error(error);
 		});
 }
+
+export function getArtistTracks() {}
+
+export function getSongs() {}
