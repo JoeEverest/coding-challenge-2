@@ -22,4 +22,21 @@ export function getArtistInfo(artist, next = null, callback) {
 
 export function getArtistTracks() {}
 
-export function getSongs() {}
+export function getSongs(query, next = null, callback) {
+	const url = next
+		? CORS_URL + next
+		: API_BASE_URL + "/search/track?index=0&limit=10&q=" + query;
+	const config = {
+		method: "get",
+		url,
+		headers: {},
+	};
+
+	Axios.request(config)
+		.then(function (response) {
+			callback(response.data);
+		})
+		.catch(function (error) {
+			console.error(error);
+		});
+}

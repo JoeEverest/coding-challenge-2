@@ -1,35 +1,26 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./app/assets/css/main.css";
-import { getArtistInfo } from "./app/api/functions";
 
 function App() {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [search, setSearch] = useState(false);
 
 	const handleSearchQuery = (e) => {
 		setSearchQuery(e.target.value);
 	};
 
-	const [nextPage, setNextPage] = useState(null);
-
-	const [artistInfo, setArtistInfo] = useState({ data: [] });
-	const [error, setError] = useState(false);
-
-	const { data } = artistInfo;
+	const navigate = useNavigate();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		getArtistInfo(searchQuery, nextPage, (data) => {
-			console.log(data);
-			if (data.error) {
-				console.log(data.error);
-				return setError(true);
-			}
-			return setArtistInfo(data);
-		});
+
+		setSearch(true);
+		navigate(`/search/${searchQuery}`);
 	};
 
 	return (
-		<div className="container">
+		<div className="container home">
 			<h1>Track Findr.</h1>
 			<p>Find the best tracks for your next party.</p>
 			<div className="search">
@@ -42,19 +33,6 @@ function App() {
 					/>
 					<button onClick={handleSubmit}>Search</button>
 				</form>
-			</div>
-			<div className="results">
-				{data.map((artist) => (
-					<div
-						className="artist-results shadow-1"
-						onClick={() => {
-							console.log(artist.tracklist);
-						}}
-					>
-						<img src={artist.picture_medium} alt={artist.name} />
-						<h3>{artist.name}</h3>
-					</div>
-				))}
 			</div>
 		</div>
 	);
