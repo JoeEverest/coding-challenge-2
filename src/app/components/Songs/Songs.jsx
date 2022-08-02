@@ -6,8 +6,8 @@ import Song from "../Song/Song";
 import { useSelector, useDispatch } from "react-redux";
 import { setSongs } from "../../reducers/songsSlice";
 
-function Songs({ searchQuery }) {
-	const [nextPage, setNextPage] = useState(null);
+function Songs({ searchQuery = null, next = null }) {
+	const [nextPage, setNextPage] = useState(next);
 
 	const storedSongs = useSelector((state) => state.songs.songs);
 
@@ -26,7 +26,7 @@ function Songs({ searchQuery }) {
 			}
 			setNextPage(data.next);
 			setLoading(false);
-            const results = [...songs, ...data.data];
+			const results = [...songs, ...data.data];
 			return dispatch(setSongs(results));
 		});
 	}

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getArtistInfo } from "../../api/functions";
 import { setArtists } from "../../reducers/artistsSlice";
 import Loader from "../Loader";
+import Songs from "../Songs/Songs";
 
 function Artists({ searchQuery }) {
 	const storedArtists = useSelector((state) => state.artists.artists);
@@ -31,12 +32,18 @@ function Artists({ searchQuery }) {
 
 	useEffect(() => {
 		fetchArtistInfo();
-	}, []);
+	}, [searchQuery]);
+
+	const [modalData, setModalData] = useState(null);
+	const [modalOpen, setModalOpen] = useState(false);
 
 	useEffect(() => {
 		setArtistInfo(storedArtists);
-
 	}, [storedArtists]);
+
+	useEffect(() => {
+		console.log(modalData);
+	}, [modalData]);
 
 	return (
 		<section className="container">
@@ -47,12 +54,8 @@ function Artists({ searchQuery }) {
 						key={index}
 						className="artist-results"
 						onClick={() => {
-							console.log({
-								name: artist.name,
-								tracklist: artist.tracklist,
-								link: artist.link,
-								image: artist.picture_medium,
-							});
+							setModalData(artist);
+							setModalOpen(true);
 						}}
 					>
 						<img src={artist.picture_medium} alt={artist.name} />
@@ -65,6 +68,28 @@ function Artists({ searchQuery }) {
 			{artistInfo.length % 10 === 0 && (
 				<button onClick={fetchArtistInfo}>Get more</button>
 			)}
+			<>
+				{modalOpen && (
+					<div className="modal">
+						<div className="modal-content">
+							<div className="close" onClick={() => setModalOpen(false)}>
+								<h1>&times;</h1>
+							</div>
+							<div className="container">
+								<div className="details">
+									<img
+										src={modalData.picture_medium}
+										alt={modalData.name}
+										className="avatar"
+									/>
+									<h3>{modalData.name}</h3>
+								</div>
+								<Songs searchQuery={null} next={modalData.tracklist} />
+							</div>
+						</div>
+					</div>
+				)}
+			</>
 		</section>
 	);
 }
