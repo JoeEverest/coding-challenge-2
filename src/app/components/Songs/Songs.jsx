@@ -26,7 +26,8 @@ function Songs({ searchQuery }) {
 			}
 			setNextPage(data.next);
 			setLoading(false);
-			return dispatch(setSongs(data.data));
+            const results = [...songs, ...data.data];
+			return dispatch(setSongs(results));
 		});
 	}
 

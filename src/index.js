@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import AppNavigator from "./app/router/AppNavigator";
 import { Provider } from "react-redux";
 import { persistor, store } from "./app/store";
