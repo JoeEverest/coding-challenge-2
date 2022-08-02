@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { getArtistInfo } from "../../api/functions";
+import { setArtists } from "../../reducers/artistsSlice";
 import Loader from "../Loader";
 
 function Artists({ searchQuery }) {
+	const storedArtists = useSelector((state) => state.artists.artists);
 	const [nextPage, setNextPage] = useState(null);
 
-	const [artistInfo, setArtistInfo] = useState([]);
+	const dispatch = useDispatch();
+
+	const [artistInfo, setArtistInfo] = useState(storedArtists);
 	const [error, setError] = useState(false);
 
 	const [loading, setLoading] = useState(false);
@@ -19,16 +24,19 @@ function Artists({ searchQuery }) {
 			}
 			setNextPage(data.next);
 			setLoading(false);
-			return setArtistInfo((prevArtistInfo) => [
-				...prevArtistInfo,
-				...data.data,
-			]);
+			const results = [...artistInfo, ...data.data];
+			return dispatch(setArtists(results));
 		});
 	}
 
 	useEffect(() => {
 		fetchArtistInfo();
 	}, []);
+
+	useEffect(() => {
+		setArtistInfo(storedArtists);
+
+	}, [storedArtists]);
 
 	return (
 		<section className="container">

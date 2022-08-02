@@ -3,11 +3,17 @@ import ReactAudioPlayer from "react-audio-player";
 import { getSongs } from "../../api/functions";
 import Loader from "../Loader";
 import Song from "../Song/Song";
+import { useSelector, useDispatch } from "react-redux";
+import { setSongs } from "../../reducers/songsSlice";
 
 function Songs({ searchQuery }) {
 	const [nextPage, setNextPage] = useState(null);
 
-	const [songs, setSongs] = useState([]);
+	const storedSongs = useSelector((state) => state.songs.songs);
+
+	const [songs, setSongsState] = useState(storedSongs);
+
+	const dispatch = useDispatch();
 	const [error, setError] = useState(false);
 
 	const [loading, setLoading] = useState(false);
@@ -20,7 +26,7 @@ function Songs({ searchQuery }) {
 			}
 			setNextPage(data.next);
 			setLoading(false);
-			return setSongs((prevSongs) => [...prevSongs, ...data.data]);
+			return dispatch(setSongs(data.data));
 		});
 	}
 
@@ -29,8 +35,8 @@ function Songs({ searchQuery }) {
 	}, [searchQuery]);
 
 	useEffect(() => {
-		console.log(songs);
-	}, [songs]);
+		setSongsState(storedSongs);
+	}, [storedSongs]);
 
 	return (
 		<section className="container">

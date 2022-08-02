@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./app/assets/css/main.css";
+import { useSelector, useDispatch } from "react-redux";
+import { setSongs } from "./app/reducers/songsSlice";
+import { setArtists } from "./app/reducers/artistsSlice";
 
 function App() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -19,6 +22,19 @@ function App() {
 		navigate(`/search/${searchQuery}`);
 	};
 
+	const store = useSelector((state) => state);
+
+	useEffect(() => {
+		console.log(store);
+	}, [store]);
+
+	//clear store when searchQuery is changes
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(setSongs([]));
+		dispatch(setArtists([]));
+	}, [searchQuery]);
+
 	return (
 		<div className="container home">
 			<h1>Track Findr.</h1>
@@ -30,6 +46,7 @@ function App() {
 						className="search-input"
 						placeholder="Search for a track, artist, album"
 						onChange={handleSearchQuery}
+						value={searchQuery}
 					/>
 					<button onClick={handleSubmit}>Search</button>
 				</form>
